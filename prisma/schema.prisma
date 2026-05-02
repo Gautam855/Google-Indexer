@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  projects     Project[]
+}
+
+model Project {
+  id                String          @id @default(uuid())
+  userId            String
+  name              String
+  domain            String
+  googleCredentials String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  urls              Url[]
+  sitemaps          Sitemap[]
+  submissionLogs    SubmissionLog[]
+
+  @@index([userId])
+}
+
+model Url {
+  id              String    @id @default(uuid())
+  projectId       String
+  url             String
+  status          String    @default("pending")
+  attempts        Int       @default(0)
+  lastSubmittedAt DateTime?
+  lastCheckedAt   DateTime?
+  campaign        String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  project         Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, url])
+  @@index([projectId, status])
+  @@index([status])
+}
+
+model Sitemap {
+  id              String          @id @default(uuid())
+  projectId       String
+  filename        String
+  urlCount        Int
+  filePath        String
+  createdAt       DateTime        @default(now())
+  project         Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  submissionLogs  SubmissionLog[]
+
+  @@index([projectId])
+}
+
+model SubmissionLog {
+  id        String   @id @default(uuid())
+  projectId String
+  sitemapId String?
+  status    String
+  message   String?
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sitemap   Sitemap? @relation(fields: [sitemapId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+  @@index([sitemapId])
+}
