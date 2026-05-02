@@ -162,7 +162,7 @@ export default function UrlsPage() {
     const csv = [
       "URL,Status,Attempts,Last Submitted,Created",
       ...urls.map(
-        (u) =>
+        (u: UrlItem) =>
           `"${u.url}","${u.status}",${u.attempts},"${u.lastSubmittedAt || ""}","${u.createdAt}"`
       ),
     ].join("\n");

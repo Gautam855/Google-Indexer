@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
       trendMap.set(key, { submitted: 0, indexed: 0, failed: 0, total: 0 });
     }
 
-    dailyUrls.forEach((u) => {
+    dailyUrls.forEach((u: { createdAt: Date; status: string }) => {
       const key = new Date(u.createdAt).toISOString().split("T")[0];
       const entry = trendMap.get(key);
       if (entry) {

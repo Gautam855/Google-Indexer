@@ -141,8 +141,8 @@ export async function POST(req: NextRequest) {
       where: { projectId, url: { in: urls } },
       select: { url: true },
     });
-    const existingSet = new Set(existingUrls.map((u) => u.url));
-    const newUrls = urls.filter((u) => !existingSet.has(u));
+    const existingSet = new Set(existingUrls.map((u: { url: string }) => u.url));
+    const newUrls = urls.filter((u: string) => !existingSet.has(u));
 
     if (newUrls.length === 0) {
       return NextResponse.json({

@@ -80,7 +80,7 @@ export async function generateSitemapsForProject(projectId: string) {
     return { sitemapCount: 0, totalUrls: 0 };
   }
 
-  const urlStrings = urls.map((u) => u.url);
+  const urlStrings = urls.map((u: { url: string }) => u.url);
   const chunks = chunkArray(urlStrings, CHUNK_SIZE);
 
   // Clear old sitemaps from DB for this project
