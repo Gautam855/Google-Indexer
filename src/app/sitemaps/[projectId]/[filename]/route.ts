@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { chunkArray } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 const CHUNK_SIZE = 250; // URLs per sitemap
 
 function escapeXml(str: string): string {
@@ -49,7 +51,7 @@ ${entries}
       return new NextResponse(xml, {
         headers: {
           "Content-Type": "application/xml",
-          "Cache-Control": "public, max-age=3600, s-maxage=3600",
+          "Cache-Control": "no-store, max-age=0",
         },
       });
     }
@@ -100,7 +102,7 @@ ${urlEntries}
     return new NextResponse(xml, {
       headers: {
         "Content-Type": "application/xml",
-        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+        "Cache-Control": "no-store, max-age=0",
       },
     });
   } catch (error) {
