@@ -26,7 +26,8 @@ export async function GET(req: NextRequest) {
 
     const scopes = [
       "https://www.googleapis.com/auth/webmasters",
-      "https://www.googleapis.com/auth/indexing"
+      "https://www.googleapis.com/auth/indexing",
+      "https://www.googleapis.com/auth/siteverification"
     ];
 
     const url = oauth2Client.generateAuthUrl({

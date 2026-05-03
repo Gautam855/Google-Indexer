@@ -99,6 +99,57 @@ export default function SettingsPage() {
               <CheckCircle2 className="w-4 h-4" />
               Successfully connected to Google
             </div>
+
+            {/* Verification Section */}
+            <div className="p-4 rounded-lg bg-bg-secondary/50 border border-border-primary/50 mt-2">
+              <h3 className="text-sm font-semibold mb-2">Domain Verification (Required for new domains)</h3>
+              <p className="text-xs text-text-muted mb-4">
+                If {project.domain} is not verified in your Google Search Console, you can get a Meta Tag here and verify it directly from this dashboard.
+              </p>
+              
+              <div className="flex gap-2">
+                <button 
+                  onClick={async () => {
+                    setMessage(null);
+                    try {
+                      const res = await fetchApi('/api/google/verify', {
+                        method: 'POST',
+                        body: { projectId: project.id, action: 'getToken' }
+                      });
+                      if (res.token) {
+                        prompt("Copy this Meta Tag and paste it inside the <head> section of your website:", res.token);
+                      }
+                    } catch (err: any) {
+                      setMessage({ type: "error", text: err.message });
+                    }
+                  }}
+                  className="btn-primary text-xs bg-bg-primary"
+                >
+                  1. Get Meta Tag
+                </button>
+
+                <button 
+                  onClick={async () => {
+                    setMessage(null);
+                    setSaving(true);
+                    try {
+                      await fetchApi('/api/google/verify', {
+                        method: 'POST',
+                        body: { projectId: project.id, action: 'verify' }
+                      });
+                      setMessage({ type: "success", text: "Domain verified and added to Search Console successfully!" });
+                    } catch (err: any) {
+                      setMessage({ type: "error", text: err.message });
+                    } finally {
+                      setSaving(false);
+                    }
+                  }}
+                  className="btn-primary text-xs"
+                >
+                  2. Verify & Add to GSC
+                </button>
+              </div>
+            </div>
             
             <details className="mt-2">
               <summary className="text-xs text-text-muted cursor-pointer hover:text-text-primary">View/Edit Raw Credentials JSON</summary>
